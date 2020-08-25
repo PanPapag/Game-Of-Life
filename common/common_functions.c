@@ -35,7 +35,7 @@ char** evolution(char** old_grid, int size) {
         for (int j = 0; j < size; j++) {
             // compute how many organizations exist near the cell we are about to evolve
             int alive_neighbours = (old_grid[i-1][j-1] == '1') + (old_grid[i-1][j] == '1') + (old_grid[i-1][j+1] == '1') +
-                                    (old_grid[i][j-1] == '1') +(old_grid[i][j+1] == '1') +
+                                    (old_grid[i][j-1] == '1') + (old_grid[i][j+1] == '1') +
                                     (old_grid[i+1][j-1] == '1') +(old_grid[i+1][j] == '1') +(old_grid[i+1][j+1] == '1');
             // rules regarding an alive cell
             if (old_grid[i] == '1') {
