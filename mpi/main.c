@@ -2,12 +2,20 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include <time.h>
+
 #include <mpi.h>
 
+#include "../common/common_functions.h"
 
 // we are going to run as:  mpiexec [-n nproc]./gol [-s size -l loops -i input]
 int main(int argc, char** argv) {
+    // initialize the mpi stuff
     int grid_size, n_loops;
+    int size, rank;
+    MPI_Init(&argc, &argv);
+    MPI_Comm_size(MPI_COMM_WORLD, &size);
+    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     // argument checking
     if (!strcmp(argv[1], "-s")) {
         grid_size = atoi(argv[2]);
@@ -21,27 +29,21 @@ int main(int argc, char** argv) {
         printf("Run as : mpiexec [-n <n_processes>] ./gol -s <grid size> -l <maximum loops> [-i <input file>]");
         exit(EXIT_FAILURE);
     }
-    bool user_input;
+    bool user_input = false;
     char* input_file_name;
     // user wants an extra argument, probably it's an input file
-    if (argv[5]) {
-        if (strcmp(argv[5], "-i")) {
-            user_input = true;
-        } else {
-            printf("Run as : mpiexec [-n <n_processes>] ./gol -s <grid size> -l <maximum loops> [-i <input file>]");
-            exit(EXIT_FAILURE);
-        }
-    } else {
-        // user does not want an input file, 
-        user_input = false;
-        input_file_name = strdup(argv[6]);
-    }
-    // initialize the mpi stuff
-    int size, rank; 
-    MPI_Init(&argc, &argv);
-    MPI_Comm_size(MPI_COMM_WORLD, &size);
-    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-    MPI_Comm_set_errhandler(MPI_COMM_WORLD, MPI_ERRORS_RETURN);
+    // if (argv[5]) {
+    //     if (strcmp(argv[5], "-i")) {
+    //         user_input = true;
+    //     } else {
+    //         printf("Run as : mpiexec [-n <n_processes>] ./gol -s <grid size> -l <maximum loops> [-i <input file>]");
+    //         exit(EXIT_FAILURE);
+    //     }
+    // } else {
+    //     // user does not want an input file,
+    //     user_input = false;
+    //     input_file_name = strdup(argv[6]);
+    // }
 
     char** grid;
     // if we have user input, read from the file and fill the grid
@@ -60,4 +62,13 @@ int main(int argc, char** argv) {
             }
         }
     }
+    for (int i = 0; i < grid_size; i++) {
+        for (int j = 0; j < grid_size; j++) {
+            printf("%c ",grid[i][j]);
+        }
+        printf("\n");
+    }
+
+    MPI_Finalize();
+
 }

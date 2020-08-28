@@ -3,9 +3,11 @@
 #include <string.h>
 #include <stdbool.h>
 
+#include "common_functions.h"
+
 // load a grid form a file
 char** load_from_file(FILE* input) {
-    // the input file should be as following: 
+    // the input file should be as following:
     // 1st line: size (n * n)
     // each line after: n chars (followed by space), 0->dead 1->alive
     char* first_line = malloc(2 * sizeof(char));
@@ -38,25 +40,25 @@ char** evolution(char** old_grid, int size) {
                                     (old_grid[i][j-1] == '1') + (old_grid[i][j+1] == '1') +
                                     (old_grid[i+1][j-1] == '1') +(old_grid[i+1][j] == '1') +(old_grid[i+1][j+1] == '1');
             // rules regarding an alive cell
-            if (old_grid[i] == '1') {
+            if (old_grid[i][j] == '1') {
                 // 0 or 1 neighbours -> the cell dies
                 if (alive_neighbours < 2) {
-                    new_grid[i] = '0';
+                    new_grid[i][j] = '0';
                 }
                 // 2 or 3 neighbours -> the cell survives
                 else if (alive_neighbours < 4) {
-                    new_grid[i] = '1';
+                    new_grid[i][j] = '1';
                 }
                 // more than 4 neighbours -> the cell dies due to overpopulation
                 else {
-                    new_grid[i] = '0';
+                    new_grid[i][j] = '0';
                 }
             }
             // rules regarding dead cells
             else {
                 // exactly 3 neighbours -> a new cell is born
                 if (alive_neighbours == 3) {
-                    new_grid[i] = '1';
+                    new_grid[i][j] = '1';
                 }
             }
         }
