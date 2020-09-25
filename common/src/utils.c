@@ -70,12 +70,10 @@ char** load_from_file(const char* filepath) {
       char current;
       // read each character from the file, and assign it to the grid
       current = getc(input);
-      printf("%c\n", current);
       grid[i][j] = current;
     }
     // read the \n
     getc(input);
-    printf("\n");
   }
   return grid;
 }

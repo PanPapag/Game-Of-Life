@@ -14,7 +14,7 @@ COMMON_OBJ := $(filter ./common/%.o, $(ALL_OBJ))
 all: $(BDIR)/main.x
 
 $(BDIR)/main.x: $(ALL_OBJ)
-	$(CC) $(CFLAGS) $(MPI_OBJ) $(COMMON_OBJ) -o $@
+	$(CC) $(CFLAGS) $(MPI_OBJ) $(COMMON_OBJ) -o $@ -lm
 	rm -rf $(MPI_OBJ)
 
 .PHONY: clean
