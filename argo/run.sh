@@ -7,7 +7,7 @@
 #PBS -l walltime=00:01:00
 
 # How many nodes and tasks per node, Example 2 nodes with 8 tasks each => 16 tasks #
-#PBS -l nodes=2:ppn=8
+#PBS -l nodes=1:ppn=4
 
 # Which Queue to use, DO NOT CHANGE #
 #PBS -q workq
@@ -30,4 +30,4 @@ cd $PBS_O_WORKDIR
 export OMP_NUM_THREADS=1
 
 # Run executable #
-mpirun ../build/main.x -l 5 -n 5 -i "/home/pool/argo081/Game-Of-Life/misc/grids/small"
+mpirun ../build/main.x -l 5 -n 8 -i "/home/pool/argo081/Game-Of-Life/misc/grids/small"
