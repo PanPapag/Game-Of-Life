@@ -54,28 +54,13 @@ char** evolution(char** old_grid, int size) {
   return new_grid;
 }
 
-char** load_from_file(const char* filepath) {
-  // open file
-  FILE* input = fopen(filepath, "r");
-  // the input file should be as following:
-  // 1st line: size (n * n)
-  // each line after: n chars (followed by space), 0->dead 1->alive
-  char* first_line = malloc(2 * sizeof(char));
-  fscanf(input, "%s\n", first_line);
-  int size = atoi(first_line);
-  char** grid = malloc(size * sizeof(char*));
-  for (int i = 0; i < size; i++) {
-    grid[i] = malloc(size * sizeof(char));
-    for (int j = 0; j < size; j++) {
-      char current;
-      // read each character from the file, and assign it to the grid
-      current = getc(input);
-      grid[i][j] = current;
-    }
-    // read the \n
-    getc(input);
+char** allocate_memory(int rows, int columns) {
+  char* data = malloc(rows * columns * sizeof(char));
+  char** arr = malloc(rows * sizeof(char*));
+  for (int i = 0; i < rows; i++) {
+    arr[i] = &(data[i*columns]);
   }
-  return grid;
+  return arr;
 }
 
 bool str_to_ui64_with_end_ptr(const char* source, uint64_t* destination, char** end_ptr) {

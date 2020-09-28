@@ -1,14 +1,11 @@
-1 1 0 0 0 0 1 1 
-0 1 0 1 0 1 0 1 
-0 0 0 1 1 1 0 1 
-1 0 1 0 1 1 1 0 
-0 0 1 1 1 1 1 1 
-1 0 1 1 1 0 0 0 
-1 0 1 0 1 0 1 0 
-1 0 1 0 1 0 0 1 
-MPI process 0 sends values - SR: 0 - SC: 0 - R/C: 4/4
-MPI process 1 received values.
+RANK: 0
+1 1 0 0 
+0 1 0 1 
+0 0 0 1 
+1 0 1 0 
+MPI process 0 sends values: 1 0 0 1.
+MPI process 1 received values:
 1
-0
+1
 0
 0

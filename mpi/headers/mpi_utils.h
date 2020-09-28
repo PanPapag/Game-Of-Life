@@ -17,11 +17,6 @@ typedef struct neighbors {
   int north_east;
 } process_neighbors;
 
-typedef struct grid {
-  int start_col;
-  int start_row;
-} process_grid;
-
 typedef struct subgrid {
   int div_factor;
   int cols;
@@ -30,5 +25,4 @@ typedef struct subgrid {
 
 void compute_neighbors(MPI_Comm comm2D, process_neighbors* p);
 
-void split_grid(int my_rank, int num_processes, int size,
-                subgrid_info* subgrid, process_grid* p_grid);
+void split_grid(int my_rank, int num_processes, int size, subgrid_info* subgrid);

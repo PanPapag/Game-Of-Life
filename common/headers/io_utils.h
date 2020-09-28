@@ -3,6 +3,8 @@
 
 	#include <getopt.h>
 
+	#include "../../mpi/headers/mpi_utils.h"
+
   static struct option options_spec[] = {
     {"l",    required_argument, NULL, 'l'},
     {"i",    required_argument, NULL, 'i'},
@@ -18,5 +20,7 @@
   } program_options;
 
   void parse_command_line_arguments(int argc, char *argv[]);
+
+	char** parallel_read(const char* input_file, int rank, int size, subgrid_info* subgrid);
 
 #endif

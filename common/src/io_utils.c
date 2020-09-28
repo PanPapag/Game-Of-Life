@@ -10,6 +10,35 @@
 
 program_options options;
 
+char** parallel_read(const char* input_file, int rank, int size, subgrid_info* subgrid) {
+  int start_row = (rank / subgrid->div_factor) * subgrid->rows;
+  int start_col = (rank % subgrid->div_factor) * subgrid->cols;
+
+  MPI_File in_file_handle;
+	MPI_File_open(MPI_COMM_WORLD, input_file, MPI_MODE_RDONLY, MPI_INFO_NULL, &in_file_handle);
+
+  char* line_buffer = malloc(subgrid->cols * sizeof(char));
+
+  char** local_grid = allocate_memory(subgrid->rows+2, subgrid->cols+2);
+
+  for (int row = 0; row != subgrid->rows; ++row) {
+    int row_pos = (start_row + row) * size;
+		int read_pos = (row_pos + start_col);
+
+		MPI_File_seek(in_file_handle, read_pos, MPI_SEEK_SET);
+		MPI_File_read(in_file_handle, line_buffer, subgrid->cols, MPI_CHAR, MPI_STATUS_IGNORE);
+
+		for (int i = 0; i != subgrid->cols; ++i)
+			local_grid[row+1][i+1] = (char) line_buffer[i];
+	}
+
+	free(line_buffer);
+
+	MPI_File_close(&in_file_handle);
+
+  return local_grid;
+}
+
 static inline
 void __usage() {
     fprintf(stderr,
