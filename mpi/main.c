@@ -15,6 +15,7 @@ extern program_options options;
 
 int main(int argc, char** argv) {
   int ndims=2, size, my_rank, reorder, my_cart_rank, ierr, errs, nrows, ncols;
+  int local_start_time, local_time_elapsed;
   int dims[ndims], coord[ndims];
   int wrap_around[ndims];
   MPI_Comm comm2D;
@@ -66,9 +67,63 @@ int main(int argc, char** argv) {
   MPI_Type_commit(&row_datatype);
 
   // MAIN ALGORITHM
-  for (int i = 0; i < 50; ++i) {
-    parallel_write("../test", my_rank, options.size, &subgrid, local_grid);
+  MPI_Request send_req[4], recv_req[4];
+  MPI_Status status[4];
+
+  MPI_Barrier(MPI_COMM_WORLD);
+  local_start_time = MPI_Wtime();
+
+  // top
+  MPI_Irecv(&local_grid[0][1], 1, row_datatype, p.north, 0, comm2D, &recv_req[0]);
+  MPI_Isend(&local_grid[1][1], 1, row_datatype, p.north, 0, comm2D, &send_req[0]);
+
+  // bottom
+  MPI_Irecv(&local_grid[subgrid.rows+1][1], 1, row_datatype, p.south, 0, comm2D, &recv_req[1]);
+  MPI_Isend(&local_grid[subgrid.rows][1], 1, row_datatype, p.south, 0, comm2D, &send_req[1]);
+
+  // right
+  MPI_Irecv(&local_grid[1][subgrid.cols+1], 1, column_datatype, p.east, 0, comm2D, &recv_req[2]);
+  MPI_Isend(&local_grid[1][subgrid.cols], 1, column_datatype, p.east, 0, comm2D, &send_req[2]);
+
+  // left
+  MPI_Irecv(&local_grid[1][0], 1, column_datatype, p.west, 0, comm2D, &recv_req[3]);
+  MPI_Isend(&local_grid[1][1], 1, column_datatype, p.west, 0, comm2D, &send_req[3]);
+
+  MPI_Waitall(4, recv_req, status);
+
+  // if (p.north != MPI_PROC_NULL) {
+  //     printf("MPIKE -> RANK %d - NORTH: %d - WEST: %d\n",my_rank, p.north, p.west);
+  //     for (int i = 0; i <= subgrid.rows; ++i) {
+  //       for (int j = 0; j < subgrid.cols; ++j) {
+  //         printf("%c ",local_grid[i][j+1]);
+  //       }
+  //       printf("\n");
+  //     }
+  // }
+  //
+  // if (p.south != MPI_PROC_NULL) {
+  //     printf("MPIKE -> RANK %d - NORTH: %d - WEST: %d\n",my_rank, p.north, p.west);
+      // for (int i = 0; i <= subgrid.rows; ++i) {
+      //   for (int j = 0; j < subgrid.cols; ++j) {
+      //     printf("%c ",local_grid[i+1][j+1]);
+      //   }
+      //   printf("\n");
+      // }
+  // }
+
+  if (my_rank == 3) {
+    for (int i = 0; i <= subgrid.rows; ++i) {
+      for (int j = 0; j <= subgrid.cols; ++j) {
+        if (i == 0 && j == 0) continue;
+        printf("%c ",local_grid[i][j]);
+      }
+      printf("\n");
+    }
   }
+
+  MPI_Waitall(4, send_req, status);
+
+  local_time_elapsed = MPI_Wtime() - local_start_time;
 
   MPI_Finalize();
 

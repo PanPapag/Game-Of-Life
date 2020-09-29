@@ -63,7 +63,7 @@ void parallel_write(const char* output_file, int rank, int size, subgrid_info* s
 
 		MPI_File_write(out_file_handle, line_buffer, subgrid->cols, MPI_CHAR, MPI_STATUS_IGNORE);
 	}
-  // Add '\n' in the end
+  // Add '\n' in the end TODO
   if (rank == 3) {
     MPI_File_write(out_file_handle, "\n", 1, MPI_CHAR, MPI_STATUS_IGNORE);
   }
