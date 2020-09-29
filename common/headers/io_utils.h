@@ -21,6 +21,8 @@
 
   void parse_command_line_arguments(int argc, char *argv[]);
 
+	// Paralell I/O functions
 	char** parallel_read(const char* input_file, int rank, int size, subgrid_info* subgrid);
+	void parallel_write(const char* output_file, int rank, int size, subgrid_info* subgrid, char** local_grid);
 
 #endif

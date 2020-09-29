@@ -65,6 +65,11 @@ int main(int argc, char** argv) {
   MPI_Type_commit(&column_datatype);
   MPI_Type_commit(&row_datatype);
 
+  // MAIN ALGORITHM
+  for (int i = 0; i < 50; ++i) {
+    parallel_write("../test", my_rank, options.size, &subgrid, local_grid);
+  }
+
   MPI_Finalize();
 
   return 0;
