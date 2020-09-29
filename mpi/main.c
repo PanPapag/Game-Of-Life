@@ -8,6 +8,7 @@
 #include <mpi.h>
 
 #include "../common/headers/io_utils.h"
+#include "../common/headers/game_utils.h"
 #include "../common/headers/utils.h"
 #include "./headers/mpi_utils.h"
 
@@ -70,8 +71,8 @@ int main(int argc, char** argv) {
   MPI_Request send_req[8], recv_req[8];
   MPI_Status status[8];
 
-  printf("Rank: %d - S: %d - N: %d - W: %d - E: %d SW: %d - SE: %d - NW: %d - NE: %d\n",
-    my_rank, p.south, p.north, p.west, p.east, p.south_west, p.south_east, p.north_west, p.north_east);
+  // printf("Rank: %d - S: %d - N: %d - W: %d - E: %d SW: %d - SE: %d - NW: %d - NE: %d\n",
+  //   my_rank, p.south, p.north, p.west, p.east, p.south_west, p.south_east, p.north_west, p.north_east);
 
   MPI_Barrier(MPI_COMM_WORLD);
   local_start_time = MPI_Wtime();
@@ -110,18 +111,13 @@ int main(int argc, char** argv) {
 
   MPI_Waitall(8, recv_req, status);
 
-  // if (my_rank == 2) {
-  //   for (int i = 0; i <= subgrid.rows; ++i) {
-  //     for (int j = 1; j <= subgrid.cols+1; ++j) {
-  //       printf("%c ",local_grid[i][j]);
-  //     }
-  //     printf("\n");
-  //   }
-  // }
+  // ADD ALGORITHM for calculate_inner_gen / calculate_outter_gen
 
   MPI_Waitall(8, send_req, status);
 
   local_time_elapsed = MPI_Wtime() - local_start_time;
+
+  // parallel_write("../test", my_rank, options.size, &subgrid, local_grid);
 
   MPI_Finalize();
 
