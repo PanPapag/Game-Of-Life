@@ -67,61 +67,59 @@ int main(int argc, char** argv) {
   MPI_Type_commit(&row_datatype);
 
   // MAIN ALGORITHM
-  MPI_Request send_req[4], recv_req[4];
-  MPI_Status status[4];
+  MPI_Request send_req[8], recv_req[8];
+  MPI_Status status[8];
+
+  printf("Rank: %d - S: %d - N: %d - W: %d - E: %d SW: %d - SE: %d - NW: %d - NE: %d\n",
+    my_rank, p.south, p.north, p.west, p.east, p.south_west, p.south_east, p.north_west, p.north_east);
 
   MPI_Barrier(MPI_COMM_WORLD);
   local_start_time = MPI_Wtime();
 
-  // top
+  // Top
   MPI_Irecv(&local_grid[0][1], 1, row_datatype, p.north, 0, comm2D, &recv_req[0]);
   MPI_Isend(&local_grid[1][1], 1, row_datatype, p.north, 0, comm2D, &send_req[0]);
 
-  // bottom
+  // Bottom
   MPI_Irecv(&local_grid[subgrid.rows+1][1], 1, row_datatype, p.south, 0, comm2D, &recv_req[1]);
   MPI_Isend(&local_grid[subgrid.rows][1], 1, row_datatype, p.south, 0, comm2D, &send_req[1]);
 
-  // right
+  // Right
   MPI_Irecv(&local_grid[1][subgrid.cols+1], 1, column_datatype, p.east, 0, comm2D, &recv_req[2]);
   MPI_Isend(&local_grid[1][subgrid.cols], 1, column_datatype, p.east, 0, comm2D, &send_req[2]);
 
-  // left
+  // Left
   MPI_Irecv(&local_grid[1][0], 1, column_datatype, p.west, 0, comm2D, &recv_req[3]);
   MPI_Isend(&local_grid[1][1], 1, column_datatype, p.west, 0, comm2D, &send_req[3]);
 
-  MPI_Waitall(4, recv_req, status);
+  // Top-Right
+  MPI_Irecv(&local_grid[0][subgrid.cols+1], 1, MPI_CHAR, p.north_east, 0, comm2D, &recv_req[4]);
+  MPI_Isend(&local_grid[1][subgrid.cols], 1, MPI_CHAR, p.north_east, 0, comm2D, &send_req[4]);
 
-  // if (p.north != MPI_PROC_NULL) {
-  //     printf("MPIKE -> RANK %d - NORTH: %d - WEST: %d\n",my_rank, p.north, p.west);
-  //     for (int i = 0; i <= subgrid.rows; ++i) {
-  //       for (int j = 0; j < subgrid.cols; ++j) {
-  //         printf("%c ",local_grid[i][j+1]);
-  //       }
-  //       printf("\n");
+  // Top-Left
+  MPI_Irecv(&local_grid[0][0], 1, MPI_CHAR, p.north_west, 0, comm2D, &recv_req[5]);
+  MPI_Isend(&local_grid[1][1], 1, MPI_CHAR, p.north_west, 0, comm2D, &send_req[5]);
+
+  // Bottom-Right
+  MPI_Irecv(&local_grid[subgrid.rows+1][subgrid.cols+1], 1, MPI_CHAR, p.south_east, 0, comm2D, &recv_req[6]);
+  MPI_Isend(&local_grid[subgrid.rows][subgrid.cols], 1, MPI_CHAR, p.south_east, 0, comm2D, &send_req[6]);
+
+  // Bottom-Left
+  MPI_Irecv(&local_grid[subgrid.rows+1][0], 1, MPI_CHAR, p.south_west, 0, comm2D, &recv_req[7]);
+  MPI_Isend(&local_grid[subgrid.rows][1], 1, MPI_CHAR, p.south_west, 0, comm2D, &send_req[7]);
+
+  MPI_Waitall(8, recv_req, status);
+
+  // if (my_rank == 2) {
+  //   for (int i = 0; i <= subgrid.rows; ++i) {
+  //     for (int j = 1; j <= subgrid.cols+1; ++j) {
+  //       printf("%c ",local_grid[i][j]);
   //     }
-  // }
-  //
-  // if (p.south != MPI_PROC_NULL) {
-  //     printf("MPIKE -> RANK %d - NORTH: %d - WEST: %d\n",my_rank, p.north, p.west);
-      // for (int i = 0; i <= subgrid.rows; ++i) {
-      //   for (int j = 0; j < subgrid.cols; ++j) {
-      //     printf("%c ",local_grid[i+1][j+1]);
-      //   }
-      //   printf("\n");
-      // }
+  //     printf("\n");
+  //   }
   // }
 
-  if (my_rank == 3) {
-    for (int i = 0; i <= subgrid.rows; ++i) {
-      for (int j = 0; j <= subgrid.cols; ++j) {
-        if (i == 0 && j == 0) continue;
-        printf("%c ",local_grid[i][j]);
-      }
-      printf("\n");
-    }
-  }
-
-  MPI_Waitall(4, send_req, status);
+  MPI_Waitall(8, send_req, status);
 
   local_time_elapsed = MPI_Wtime() - local_start_time;
 
