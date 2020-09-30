@@ -46,6 +46,12 @@ void parse_command_line_arguments(int argc, char *argv[]) {
       }
       case 'o': {
         options.output_file = strdup(optarg);
+        if (file_exists(options.output_file)) {
+          remove(options.output_file);
+        } else {
+          FILE* fp = fopen(options.output_file, "w");
+          fclose(fp);
+        }
         break;
       }
       case 'n': {

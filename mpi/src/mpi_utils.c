@@ -8,7 +8,6 @@
 
 #include "../../common/headers/game_utils.h"
 #include "../../common/headers/io_utils.h"
-#include "../../common/headers/utils.h"
 
 extern program_options options;
 
@@ -83,6 +82,16 @@ void run_game(char** local_grid, int rank, int no_processes,
     // Write i-th generation using parallel I/O
     parallel_write(options.output_file, rank, no_processes, options.size, subgrid, local_grid);
   }
+
+  // Free resources
+  MPI_Type_free(&column_datatype);
+  MPI_Type_free(&row_datatype);
+
+  free(local_grid[0]);
+	free(local_grid);
+
+  free(next_gen[0]);
+  free(next_gen);
 }
 
 char** parallel_read(const char* input_file, int rank, int size, subgrid_info* subgrid) {

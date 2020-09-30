@@ -2,6 +2,8 @@
 
 #include <mpi.h>
 
+#include "../../common/headers/utils.h"
+
 #define SHIFT_ROW 0
 #define SHIFT_COL 1
 #define DISP 1
@@ -16,12 +18,6 @@ typedef struct neighbors {
   int north_west;
   int north_east;
 } process_neighbors;
-
-typedef struct subgrid {
-  int div_factor;
-  int cols;
-  int rows;
-} subgrid_info;
 
 void run_game(char** local_grid, int rank, int no_processes,
               MPI_Comm comm2D, process_neighbors* p, subgrid_info* subgrid);

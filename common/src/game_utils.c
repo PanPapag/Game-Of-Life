@@ -5,7 +5,6 @@
 
 #include "../headers/game_utils.h"
 #include "../headers/io_utils.h"
-#include "../headers/utils.h"
 
 void calculate_inner_gen(char** prev_gen, char** next_gen, subgrid_info* subgrid) {
   for (int i = 1; i <= subgrid->rows; i++) {

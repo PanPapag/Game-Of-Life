@@ -78,9 +78,6 @@ int main(int argc, char** argv) {
     printf("Elapsed Time: %.4lf secs\n", global_time);
   }
 
-  // printf("Rank: %d - S: %d - N: %d - W: %d - E: %d SW: %d - SE: %d - NW: %d - NE: %d\n",
-  //   my_rank, p.south, p.north, p.west, p.east, p.south_west, p.south_east, p.north_west, p.north_east);
-
   MPI_Finalize();
 
   return 0;
