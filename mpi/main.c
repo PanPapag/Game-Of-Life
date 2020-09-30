@@ -58,6 +58,7 @@ int main(int argc, char** argv) {
 
   // Paralell read using MPI I/0
   char** local_grid = parallel_read(options.input_file, my_rank, options.size, &subgrid);
+  parallel_write(options.output_file, my_rank, size, options.size, &subgrid, local_grid);
 
   /***************************************************/
   /* Main algorith of Game of Life using parallelism */
