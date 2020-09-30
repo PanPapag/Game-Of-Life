@@ -10,74 +10,13 @@
 
 program_options options;
 
-char** parallel_read(const char* input_file, int rank, int size, subgrid_info* subgrid) {
-  int start_row = (rank / subgrid->div_factor) * subgrid->rows;
-  int start_col = (rank % subgrid->div_factor) * subgrid->cols;
-
-  MPI_File in_file_handle;
-	MPI_File_open(MPI_COMM_WORLD, input_file, MPI_MODE_RDONLY, MPI_INFO_NULL, &in_file_handle);
-
-  char* line_buffer = malloc(subgrid->cols * sizeof(char));
-
-  char** local_grid = allocate_memory(subgrid->rows+2, subgrid->cols+2);
-
-  for (int row = 0; row != subgrid->rows; ++row) {
-    int row_pos = (start_row + row) * size;
-		int read_pos = (row_pos + start_col);
-
-		MPI_File_seek(in_file_handle, read_pos, MPI_SEEK_SET);
-		MPI_File_read(in_file_handle, line_buffer, subgrid->cols, MPI_CHAR, MPI_STATUS_IGNORE);
-
-		for (int i = 0; i != subgrid->cols; ++i)
-			local_grid[row+1][i+1] = (char) line_buffer[i];
-	}
-
-	free(line_buffer);
-
-	MPI_File_close(&in_file_handle);
-
-  return local_grid;
-}
-
-void parallel_write(const char* output_file, int rank, int size, subgrid_info* subgrid, char** local_grid) {
-  int start_row = (rank / subgrid->div_factor) * subgrid->rows;
-  int start_col = (rank % subgrid->div_factor) * subgrid->cols;
-
-  MPI_File out_file_handle;
-  MPI_Offset offset;
-	MPI_File_open(MPI_COMM_WORLD, output_file, MPI_MODE_CREATE | MPI_MODE_WRONLY | MPI_MODE_APPEND, MPI_INFO_NULL, &out_file_handle);
-  int err = MPI_File_get_position(out_file_handle, &offset);
-  printf("OFFSET %d\n",offset);
-
-	char* line_buffer = malloc(subgrid->cols * sizeof(char));
-
-	for (int row = 0; row != subgrid->rows; ++row) {
-		int row_pos = (start_row + row) * size;
-		int write_pos = offset + (row_pos + start_col);
-
-    MPI_File_seek(out_file_handle, write_pos, MPI_SEEK_SET);
-
-		for (int i = 0; i != subgrid->cols; ++i) {
-			line_buffer[i] = (char) local_grid[row+1][i+1];
-    }
-
-		MPI_File_write(out_file_handle, line_buffer, subgrid->cols, MPI_CHAR, MPI_STATUS_IGNORE);
-	}
-  // Add '\n' in the end TODO
-  if (rank == 3) {
-    MPI_File_write(out_file_handle, "\n", 1, MPI_CHAR, MPI_STATUS_IGNORE);
-  }
-	free(line_buffer);
-
-	MPI_File_close(&out_file_handle);
-}
-
 static inline
 void __usage() {
     fprintf(stderr,
             "You must provide the following arguments:\n"
             "\t-l <Number of Loops>\n"
             "\t-i <Input File>\n"
+            "\t-o <Output File>"
             "\t-n <Grid size>\n");
     exit(EXIT_FAILURE);
 }
@@ -103,6 +42,10 @@ void parse_command_line_arguments(int argc, char *argv[]) {
         if (!file_exists(options.input_file)) {
           die("Input file <%s> does not exists. Exiting...", options.input_file);
         }
+        break;
+      }
+      case 'o': {
+        options.output_file = strdup(optarg);
         break;
       }
       case 'n': {

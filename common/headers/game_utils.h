@@ -1,9 +1,6 @@
 #ifndef __GAME_UTILS__
   #define __GAME_UTILS__
 
-  #include <stdbool.h>
-  #include <stddef.h>
-  #include <stdint.h>
 
   #include "../../mpi/headers/mpi_utils.h"
 

@@ -1,8 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "../headers/game_utils.h"
+#include <mpi.h>
 
+#include "../headers/game_utils.h"
+#include "../headers/io_utils.h"
 #include "../headers/utils.h"
 
 void calculate_inner_gen(char** prev_gen, char** next_gen, subgrid_info* subgrid) {
