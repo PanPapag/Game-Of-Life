@@ -3,8 +3,10 @@
 
   #include "../headers/utils.h"
 
-  void calculate_inner_gen(char** prev_gen, char** next_gen, subgrid_info* subgrid);
+  int exec_game_rules(char** prev_gen, char** next_gen, int i, int j, int alive_neighbours);
 
-  void calculate_outter_gen(char** prev_gen, char** next_gen, subgrid_info* subgrid);
+  int calculate_inner_gen(char** prev_gen, char** next_gen, subgrid_info* subgrid);
+
+  int calculate_outter_gen(char** prev_gen, char** next_gen, subgrid_info* subgrid);
 
 #endif

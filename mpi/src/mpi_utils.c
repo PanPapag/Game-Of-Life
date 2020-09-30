@@ -1,6 +1,7 @@
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
 #include <mpi.h>
 
@@ -25,6 +26,8 @@ void run_game(char** local_grid, int rank, int no_processes,
 
   MPI_Request send_req[8], recv_req[8];
   MPI_Status status[8];
+
+  int local_change, changed;
 
   // Allocate memory for next_gen local grid and declare temp to swap prev_gen
   // with next gen
@@ -65,17 +68,27 @@ void run_game(char** local_grid, int rank, int no_processes,
     MPI_Isend(&local_grid[subgrid->rows][1], 1, MPI_CHAR, p->south_west, 0, comm2D, &send_req[7]);
 
     // Calculate inner data points (white)
-    calculate_inner_gen(local_grid, next_gen, subgrid);
+    local_change = calculate_inner_gen(local_grid, next_gen, subgrid);
 
     MPI_Waitall(8, recv_req, status);
 
     // Calculate outter data points (green)
-    calculate_outter_gen(local_grid, next_gen, subgrid);
+    local_change = calculate_outter_gen(local_grid, next_gen, subgrid);
 
     // Swap local arrays (previous generation <-> next generation)
     temp = local_grid;
   	local_grid = next_gen;
   	next_gen = temp;
+
+    if (options.reduce) {
+      MPI_Allreduce(&local_change, &changed, 1, MPI_INT, MPI_SUM, comm2D);
+      if (changed == 0) {
+        if (rank == 0) {
+          printf("Terminated at loop: %d out of %d\n", i+1, options.loops);
+        }
+        break;
+      }
+    }
 
     MPI_Waitall(8, send_req, status);
 

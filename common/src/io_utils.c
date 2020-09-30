@@ -15,6 +15,7 @@ void __usage() {
     fprintf(stderr,
             "You must provide the following arguments:\n"
             "\t-l <Number of Loops>\n"
+            "\t-r <Reduce Flag>\n"
             "\t-i <Input File>\n"
             "\t-o <Output File>"
             "\t-n <Grid size>\n");
@@ -22,11 +23,11 @@ void __usage() {
 }
 
 void parse_command_line_arguments(int argc, char *argv[]) {
-  if (argc < 5) __usage();
+  if (argc < 9) __usage();
   int option;
   while (1) {
     int option_index;
-    option = getopt_long_only(argc, argv, "l:i:n:", options_spec, &option_index);
+    option = getopt_long_only(argc, argv, "l:i:o:n:r:", options_spec, &option_index);
     if (option == -1) break;
     switch (option) {
       case 'l': {
@@ -35,6 +36,10 @@ void parse_command_line_arguments(int argc, char *argv[]) {
           die("Invalid <Number of Loops> parameter. Exiting...");
         }
         options.loops = (int) value;
+        break;
+      }
+      case 'r': {
+        options.reduce = (bool) optarg;
         break;
       }
       case 'i': {

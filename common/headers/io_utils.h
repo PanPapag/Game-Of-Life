@@ -2,9 +2,11 @@
 	#define __COMMON_IO_UTILS__
 
 	#include <getopt.h>
+	#include <stdbool.h>
 
   static struct option options_spec[] = {
     {"l",    required_argument, NULL, 'l'},
+		{"r",    required_argument, NULL, 'r'},
     {"i",    required_argument, NULL, 'i'},
 		{"o",    required_argument, NULL, 'o'},
 		{"n",    required_argument, NULL, 'n'},
@@ -17,6 +19,7 @@
     char* input_file;
 		char* output_file;
 		int size;
+		bool reduce;
   } program_options;
 
   void parse_command_line_arguments(int argc, char *argv[]);
