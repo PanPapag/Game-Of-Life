@@ -1,10 +1,10 @@
 #include <stdio.h>
-#include <stdlib.h> 
+#include <stdlib.h>
 
 #include <mpi.h>
 
 #include "../headers/game_utils.h"
-#include "../headers/io_utils.h"
+#include "../../common/headers/io_utils.h"
 
 int exec_game_rules(char** prev_gen, char** next_gen, int i, int j, int alive_neighbours) {
   int changed = 0;

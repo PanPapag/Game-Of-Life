@@ -5,9 +5,9 @@
 
 #include <mpi.h>
 
+#include "../headers/game_utils.h"
 #include "../headers/mpi_utils.h"
 
-#include "../../common/headers/game_utils.h"
 #include "../../common/headers/io_utils.h"
 
 extern program_options options;
@@ -24,8 +24,8 @@ void run_game(char** local_grid, int rank, int no_processes,
   MPI_Type_commit(&column_datatype);
   MPI_Type_commit(&row_datatype);
 
-  MPI_Request send_req[8], recv_req[8];
-  MPI_Status status[8];
+  MPI_Request requests[16];
+  MPI_Status statuses[16];
 
   int local_change, changed;
 
@@ -34,43 +34,32 @@ void run_game(char** local_grid, int rank, int no_processes,
   char** next_gen = allocate_memory(subgrid->rows+2, subgrid->cols+2);
   char** temp;
 
+  /* Initiate Persistent Communications */
+  MPI_Send_init(&local_grid[1][1], 1, row_datatype, p->north, 0, comm2D, &requests[0]);                                // Top
+  MPI_Send_init(&local_grid[subgrid->rows][1], 1, row_datatype, p->south, 0, comm2D, &requests[1]);                    // Bottom
+  MPI_Send_init(&local_grid[1][subgrid->cols], 1, column_datatype, p->east, 0, comm2D, &requests[2]);                  // Right
+  MPI_Send_init(&local_grid[1][1], 1, column_datatype, p->west, 0, comm2D, &requests[3]);                              // Left
+  MPI_Send_init(&local_grid[1][subgrid->cols], 1, MPI_CHAR, p->north_east, 0, comm2D, &requests[4]);                   // Top-Right
+  MPI_Send_init(&local_grid[1][1], 1, MPI_CHAR, p->north_west, 0, comm2D, &requests[5]);                               // Top-Left
+  MPI_Send_init(&local_grid[subgrid->rows][subgrid->cols], 1, MPI_CHAR, p->south_east, 0, comm2D, &requests[6]);       // Bottom-Right
+  MPI_Send_init(&local_grid[subgrid->rows][1], 1, MPI_CHAR, p->south_west, 0, comm2D, &requests[7]);                   // Bottom-Left
+
+  MPI_Recv_init(&local_grid[0][1], 1, row_datatype, p->north, 0, comm2D, &requests[8]);                                // Top
+  MPI_Recv_init(&local_grid[subgrid->rows+1][1], 1, row_datatype, p->south, 0, comm2D, &requests[9]);                  // Bottom
+  MPI_Recv_init(&local_grid[1][subgrid->cols+1], 1, column_datatype, p->east, 0, comm2D, &requests[10]);               // Right
+  MPI_Recv_init(&local_grid[1][0], 1, column_datatype, p->west, 0, comm2D, &requests[11]);                             // Left
+  MPI_Recv_init(&local_grid[0][subgrid->cols+1], 1, MPI_CHAR, p->north_east, 0, comm2D, &requests[12]);                // Top-Right
+  MPI_Recv_init(&local_grid[0][0], 1, MPI_CHAR, p->north_west, 0, comm2D, &requests[13]);                              // Top-Left
+  MPI_Recv_init(&local_grid[subgrid->rows+1][subgrid->cols+1], 1, MPI_CHAR, p->south_east, 0, comm2D, &requests[14]);  // Bottom-Right
+  MPI_Recv_init(&local_grid[subgrid->rows+1][0], 1, MPI_CHAR, p->south_west, 0, comm2D, &requests[15]);                // Bottom-Left
+
   for (int i = 0; i < options.loops; ++i) {
-    // Top
-    MPI_Irecv(&local_grid[0][1], 1, row_datatype, p->north, 0, comm2D, &recv_req[0]);
-    MPI_Isend(&local_grid[1][1], 1, row_datatype, p->north, 0, comm2D, &send_req[0]);
-
-    // Bottom
-    MPI_Irecv(&local_grid[subgrid->rows+1][1], 1, row_datatype, p->south, 0, comm2D, &recv_req[1]);
-    MPI_Isend(&local_grid[subgrid->rows][1], 1, row_datatype, p->south, 0, comm2D, &send_req[1]);
-
-    // Right
-    MPI_Irecv(&local_grid[1][subgrid->cols+1], 1, column_datatype, p->east, 0, comm2D, &recv_req[2]);
-    MPI_Isend(&local_grid[1][subgrid->cols], 1, column_datatype, p->east, 0, comm2D, &send_req[2]);
-
-    // Left
-    MPI_Irecv(&local_grid[1][0], 1, column_datatype, p->west, 0, comm2D, &recv_req[3]);
-    MPI_Isend(&local_grid[1][1], 1, column_datatype, p->west, 0, comm2D, &send_req[3]);
-
-    // Top-Right
-    MPI_Irecv(&local_grid[0][subgrid->cols+1], 1, MPI_CHAR, p->north_east, 0, comm2D, &recv_req[4]);
-    MPI_Isend(&local_grid[1][subgrid->cols], 1, MPI_CHAR, p->north_east, 0, comm2D, &send_req[4]);
-
-    // Top-Left
-    MPI_Irecv(&local_grid[0][0], 1, MPI_CHAR, p->north_west, 0, comm2D, &recv_req[5]);
-    MPI_Isend(&local_grid[1][1], 1, MPI_CHAR, p->north_west, 0, comm2D, &send_req[5]);
-
-    // Bottom-Right
-    MPI_Irecv(&local_grid[subgrid->rows+1][subgrid->cols+1], 1, MPI_CHAR, p->south_east, 0, comm2D, &recv_req[6]);
-    MPI_Isend(&local_grid[subgrid->rows][subgrid->cols], 1, MPI_CHAR, p->south_east, 0, comm2D, &send_req[6]);
-
-    // Bottom-Left
-    MPI_Irecv(&local_grid[subgrid->rows+1][0], 1, MPI_CHAR, p->south_west, 0, comm2D, &recv_req[7]);
-    MPI_Isend(&local_grid[subgrid->rows][1], 1, MPI_CHAR, p->south_west, 0, comm2D, &send_req[7]);
+    MPI_Startall(16, requests);
 
     // Calculate inner data points (white)
     local_change = calculate_inner_gen(local_grid, next_gen, subgrid);
 
-    MPI_Waitall(8, recv_req, status);
+    MPI_Waitall(16, requests, statuses);
 
     // Calculate outter data points (green)
     local_change = calculate_outter_gen(local_grid, next_gen, subgrid);
@@ -89,8 +78,6 @@ void run_game(char** local_grid, int rank, int no_processes,
         break;
       }
     }
-
-    MPI_Waitall(8, send_req, status);
 
     // Write i-th generation using parallel I/O
     parallel_write(options.output_file, rank, no_processes, options.size, subgrid, local_grid);

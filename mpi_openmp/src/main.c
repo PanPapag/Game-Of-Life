@@ -7,10 +7,10 @@
 
 #include <mpi.h>
 
-#include "../common/headers/io_utils.h"
-#include "../common/headers/game_utils.h"
-#include "../common/headers/utils.h"
-#include "./headers/mpi_utils.h"
+#include "../../common/headers/io_utils.h"
+#include "../../common/headers/utils.h"
+#include "../headers/game_utils.h"
+#include "../headers/mpi_utils.h"
 
 extern program_options options;
 

@@ -4,7 +4,7 @@
 #PBS -l pvmem=2G
 
 # Max Wall time, Example 1 Minute #
-#PBS -l walltime=00:01:00
+#PBS -l walltime=00:30:00
 
 # How many nodes and tasks per node, Example 2 nodes with 8 tasks each => 16 tasks #
 #PBS -l nodes=1:ppn=4

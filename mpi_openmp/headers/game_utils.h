@@ -1,7 +1,7 @@
 #ifndef __GAME_UTILS__
   #define __GAME_UTILS__
 
-  #include "../headers/utils.h"
+  #include "../../common/headers/utils.h"
 
   int exec_game_rules(char** prev_gen, char** next_gen, int i, int j, int alive_neighbours);
 
