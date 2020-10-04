@@ -66,13 +66,15 @@ __device__ void apply_game_rules(int index, char* cur_grid, char* next_grid, int
     // exactly 3 neighbours -> a new cell is born
     if (alive_neighbours == 3) {
       next_grid[index] = '1';
+    } else {
+      next_grid[index] = '0';
     }
   }
 }
 
 __global__ void evolution(char* cur_grid, char* next_grid, int size) {
-  int x = blockDim.x * BLOCK_SIZE + threadIdx.x;
-  int y = blockDim.y * BLOCK_SIZE + threadIdx.y;
+  int x = blockIdx.x * BLOCK_SIZE + threadIdx.x;
+  int y = blockIdx.y * BLOCK_SIZE + threadIdx.y;
   int index = x * size + y;
 
   int alive_neighbours = count_alive_neighbours(x, y, size, cur_grid);
@@ -104,8 +106,8 @@ int main(int argc, char* argv[]) {
   h_grid = (char*) malloc(grid_bytes);
 
   // Allocate memory for device grids
-  cudaMalloc(&d_grid, grid_bytes);
-  cudaMalloc(&d_next_gen_grid, grid_bytes);
+  cudaMalloc((void **)&d_grid, grid_bytes);
+  cudaMalloc((void **)&d_next_gen_grid, grid_bytes);
 
   // Read input file to host grid and copy over device grid
   read_input(options.input_file, h_grid);
@@ -117,29 +119,14 @@ int main(int argc, char* argv[]) {
 
   for (int i = 0; i < options.loops; ++i) {
     evolution<<<grid_size, block_size>>>(d_grid, d_next_gen_grid, options.size);
-    cudaMemcpy(h_grid, d_next_gen_grid, grid_bytes, cudaMemcpyDeviceToHost);
-    printf("LOOP %d\n",i);
-    for (int k = 0; k < options.size; ++k) {
-      for (int j = 0; j < options.size; ++j) {
-        printf("%c", h_grid[k * options.size + j]);
-      }
-    }
-    printf("\n");
-    // Swap grids
     d_tmp_grid = d_grid;
     d_grid = d_next_gen_grid;
     d_next_gen_grid = d_tmp_grid;
+    cudaMemcpy(h_grid, d_next_gen_grid, grid_bytes, cudaMemcpyDeviceToHost);
   }
 
   // Copy results back to host grid
   cudaMemcpy(h_grid, d_grid, grid_bytes, cudaMemcpyDeviceToHost);
-
-  for (int i = 0; i < options.size; ++i) {
-    for (int j = 0; j < options.size; ++j) {
-      printf("%c", h_grid[i * options.size + j]);
-    }
-  }
-  printf("\n");
 
   // Free resources
   cudaFree(d_grid);
