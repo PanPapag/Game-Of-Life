@@ -1,12 +1,31 @@
 #include <stdio.h>
 #include <stdlib.h>
-
-#include "../common/headers/io_utils.h"
-#include "../common/headers/utils.h"
+#include <string.h>
 
 #define BLOCK_SIZE 4
 
-extern program_options options;
+typedef struct options {
+  int loops;
+  int size;
+  char* input_file;
+  char* output_file;
+} program_options;
+
+program_options options;
+
+void parse_command_line_arguments(int argc, char* argv[]) {
+  for (int i = 1; i < argc; i++) {
+    if (!strcmp(argv[i], "-l")) {
+      options.loops = atoi(argv[i+1]);
+    } else if (!strcmp(argv[i], "-n")) {
+      options.size = atoi(argv[i+1]);
+    } else if (!strcmp(argv[i], "-i")) {
+      options.input_file = strdup(argv[i+1]);
+    } else if (!strcmp(argv[i], "-o")) {
+      options.output_file = strdup(argv[i+1]);
+    }
+  }
+}
 
 __device__ char get_cell_inbounds(int x, int y, int size, char* grid) {
   if (x >= 0 && x < size && y >= 0 && y < size) {
@@ -62,9 +81,11 @@ __global__ void evolution(char* cur_grid, char* next_grid, int size) {
 }
 
 void read_input(const char* input_file, char* grid) {
+  FILE *fp;
   int i = 0;
   char c;
-  while ((c = getchar()) != '\n') {
+  fp = fopen(input_file, "r");
+  while ((c = (char) fgetc(fp)) != '\n') {
     grid[i++] = c;
   }
 }
@@ -96,6 +117,14 @@ int main(int argc, char* argv[]) {
 
   for (int i = 0; i < options.loops; ++i) {
     evolution<<<grid_size, block_size>>>(d_grid, d_next_gen_grid, options.size);
+    cudaMemcpy(h_grid, d_next_gen_grid, grid_bytes, cudaMemcpyDeviceToHost);
+    printf("LOOP %d\n",i);
+    for (int k = 0; k < options.size; ++k) {
+      for (int j = 0; j < options.size; ++j) {
+        printf("%c", h_grid[k * options.size + j]);
+      }
+    }
+    printf("\n");
     // Swap grids
     d_tmp_grid = d_grid;
     d_grid = d_next_gen_grid;
@@ -105,10 +134,19 @@ int main(int argc, char* argv[]) {
   // Copy results back to host grid
   cudaMemcpy(h_grid, d_grid, grid_bytes, cudaMemcpyDeviceToHost);
 
+  for (int i = 0; i < options.size; ++i) {
+    for (int j = 0; j < options.size; ++j) {
+      printf("%c", h_grid[i * options.size + j]);
+    }
+  }
+  printf("\n");
+
   // Free resources
   cudaFree(d_grid);
   cudaFree(d_next_gen_grid);
   free(h_grid);
+  free(options.input_file);
+  free(options.output_file);
 
   return 0;
 }
