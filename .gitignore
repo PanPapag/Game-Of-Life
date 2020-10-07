@@ -1,6 +1,10 @@
 rmate
 
+argo/MPI*
+
 misc/grids/840x840_grid
 misc/grids/1680x1680_grid
+misc/grids/6720x6720_grid
+misc/grids/13440x13440_grid
 
 misc/outputs/840x840_grid

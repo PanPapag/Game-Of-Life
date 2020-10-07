@@ -81,13 +81,18 @@ void run_game(char** local_grid, int rank, int no_processes,
   	local_grid = next_gen;
   	next_gen = temp;
 
-    if (options.reduce) {
-      MPI_Allreduce(&local_change, &changed, 1, MPI_INT, MPI_SUM, comm2D);
-      if (changed == 0) {
-        if (rank == 0) {
-          printf("Terminated at loop: %d out of %d\n", i+1, options.loops);
+    if (((i+1) % 10) == 0) {
+      if (rank == 0) {
+        printf("Checking for reduce at loop: %d out of %d\n", i+1, options.loops);
+      }
+      if (options.reduce) {
+        MPI_Allreduce(&local_change, &changed, 1, MPI_INT, MPI_SUM, comm2D);
+        if (changed == 0) {
+          if (rank == 0) {
+            printf("Terminated at loop: %d out of %d\n", i+1, options.loops);
+          }
+          break;
         }
-        break;
       }
     }
 

@@ -38,7 +38,7 @@ void parse_command_line_arguments(int argc, char *argv[]) {
         break;
       }
       case 'r': {
-        options.reduce = (bool) optarg;
+        options.reduce = true;
         break;
       }
       case 'i': {

@@ -32,7 +32,7 @@ int exec_game_rules(char** prev_gen, char** next_gen, int i, int j, int alive_ne
 }
 
 int calculate_inner_gen(char** prev_gen, char** next_gen, subgrid_info* subgrid) {
-  int changed;
+  int changed = 0;
   for (int i = 2; i <= subgrid->rows-1; i++) {
     for (int j = 2; j <= subgrid->cols-1; j++) {
       // compute how many organizations exist near the cell we are about to evolve
@@ -50,7 +50,7 @@ int calculate_inner_gen(char** prev_gen, char** next_gen, subgrid_info* subgrid)
 }
 
 int calculate_outter_gen(char** prev_gen, char** next_gen, subgrid_info* subgrid) {
-  int alive_neighbours, changed;
+  int alive_neighbours, changed = 0;
   // First row
   for (int j = 1; j <= subgrid->cols; ++j) {
     int i = 1;
@@ -95,4 +95,5 @@ int calculate_outter_gen(char** prev_gen, char** next_gen, subgrid_info* subgrid
       changed = 1;
     }
   }
+  return changed;
 }
