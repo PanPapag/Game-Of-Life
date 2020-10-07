@@ -32,4 +32,4 @@ cd $PBS_O_WORKDIR
 export OMP_NUM_THREADS=1
 
 # Run executable #
-mpirun ../../build/main.x -np 25 -l 50 -n 13440 -i "/home/pool/argo079/Game-of-Life/misc/grids/13440x13440_grid"
+mpirun -np 25 ../../build/main.x -l 50 -n 13440 -i "/home/pool/argo079/Game-of-Life/misc/grids/13440x13440_grid"
