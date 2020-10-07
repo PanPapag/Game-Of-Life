@@ -1,6 +1,7 @@
 rmate
 
 argo/MPI*
+argo/run.sh
 
 misc/grids/840x840_grid
 misc/grids/1680x1680_grid
