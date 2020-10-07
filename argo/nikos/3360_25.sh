@@ -7,7 +7,7 @@
 #PBS -l walltime=01:00:00
 
 # How many nodes and tasks per node, Example 2 nodes with 8 tasks each => 16 tasks #
-#PBS -l select=1:ncpus=8:mpiprocs=1
+#PBS -l select=4:ncpus=8:mpiprocs=7
 
 #PBS -l place=excl
 
@@ -15,13 +15,13 @@
 #PBS -q workq
 
 # Stdout Output File, if not provided a <JobName>.o<JobID> will be created #
-#PBS -o MPI+AllReduce_1_840x840.out
+#PBS -o 3360_25.out
 
 # Stderr Output File, if not provided a <JobName>.e<JobID> will be created #
-#PBS -e MPI+AllReduce_1_840x840.err
+#PBS -e 3360_25.err
 
 # JobName #
-#PBS -N MPI+AR_1_840x840
+#PBS -N myJob
 
 #Change Working directory to SUBMIT directory
 cd $PBS_O_WORKDIR
@@ -32,8 +32,4 @@ cd $PBS_O_WORKDIR
 export OMP_NUM_THREADS=1
 
 # Run executable #
-<<<<<<< HEAD
-mpirun ../build/main.x -l 50 -n 840 -i "/home/pool/argo081/Game-Of-Life/misc/grids/840x840_grid" -r 1
-=======
-mpirun ../build/main.x -l 50 -n 840 -i "/home/pool/argo079/Game-of-Life/misc/grids/840x840_grid"
->>>>>>> dd7bc03a82f1704307880f4f5f0b23689c8bb9bb
+mpirun -np 25 ../../build/main.x -l 50 -n 3360 -i "/home/pool/argo079/Game-of-Life/misc/grids/3360x3360_grid"
