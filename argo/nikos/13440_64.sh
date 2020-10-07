@@ -15,10 +15,10 @@
 #PBS -q workq
 
 # Stdout Output File, if not provided a <JobName>.o<JobID> will be created #
-#PBS -o 840_64.out
+#PBS -o 13440_64.out
 
 # Stderr Output File, if not provided a <JobName>.e<JobID> will be created #
-#PBS -e 840_64.err
+#PBS -e 13440_64.err
 
 # JobName #
 #PBS -N myJob
@@ -32,4 +32,4 @@ cd $PBS_O_WORKDIR
 export OMP_NUM_THREADS=1
 
 # Run executable #
-mpirun ../../build/main.x -l 50 -n 840 -i "/home/pool/argo079/Game-of-Life/misc/grids/840x840_grid"
+mpirun ../../build/main.x -l 50 -n 13440 -i "/home/pool/argo079/Game-of-Life/misc/grids/13440x13440_grid"

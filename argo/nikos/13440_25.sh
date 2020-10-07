@@ -7,7 +7,7 @@
 #PBS -l walltime=01:00:00
 
 # How many nodes and tasks per node, Example 2 nodes with 8 tasks each => 16 tasks #
-#PBS -l select=8:ncpus=8:mpiprocs=8
+#PBS -l select=4:ncpus=8:mpiprocs=7
 
 #PBS -l place=excl
 
@@ -15,10 +15,10 @@
 #PBS -q workq
 
 # Stdout Output File, if not provided a <JobName>.o<JobID> will be created #
-#PBS -o 840_64.out
+#PBS -o 13440_25.out
 
 # Stderr Output File, if not provided a <JobName>.e<JobID> will be created #
-#PBS -e 840_64.err
+#PBS -e 13440_25.err
 
 # JobName #
 #PBS -N myJob
@@ -32,4 +32,4 @@ cd $PBS_O_WORKDIR
 export OMP_NUM_THREADS=1
 
 # Run executable #
-mpirun ../../build/main.x -l 50 -n 840 -i "/home/pool/argo079/Game-of-Life/misc/grids/840x840_grid"
+mpirun ../../build/main.x -np 25 -l 50 -n 13440 -i "/home/pool/argo079/Game-of-Life/misc/grids/13440x13440_grid"
