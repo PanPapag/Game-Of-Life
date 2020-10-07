@@ -7,7 +7,7 @@
 #PBS -l walltime=01:00:00
 
 # How many nodes and tasks per node, Example 2 nodes with 8 tasks each => 16 tasks #
-#PBS -l select=1:ncpus=1:mpiprocs=1
+#PBS -l select=2:ncpus=8:mpiprocs=8
 
 #PBS -l place=excl
 
@@ -15,10 +15,10 @@
 #PBS -q workq
 
 # Stdout Output File, if not provided a <JobName>.o<JobID> will be created #
-#PBS -o job.out
+#PBS -o 840_16.out
 
 # Stderr Output File, if not provided a <JobName>.e<JobID> will be created #
-#PBS -e job.err
+#PBS -e 840_16.err
 
 # JobName #
 #PBS -N myJob
