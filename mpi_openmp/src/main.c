@@ -16,9 +16,9 @@ extern program_options options;
 
 int main(int argc, char** argv) {
   int ndims = 2, size, my_rank, reorder, my_cart_rank, ierr, errs, nrows, ncols;
-  int local_start_time, local_time_elapsed, time_elapsed;
   int dims[ndims], coord[ndims];
   int wrap_around[ndims];
+  double local_start_time, local_time_elapsed, time_elapsed;
   double global_time = 0.0;
   MPI_Comm comm2D;
 
@@ -58,7 +58,9 @@ int main(int argc, char** argv) {
 
   // Paralell read using MPI I/0
   char** local_grid = parallel_read(options.input_file, my_rank, options.size, &subgrid);
-  parallel_write(options.output_file, my_rank, size, options.size, &subgrid, local_grid);
+  if (options.output_file != NULL) {
+    parallel_write(options.output_file, my_rank, size, options.size, &subgrid, local_grid);
+  }
 
   /***************************************************/
   /* Main algorith of Game of Life using parallelism */
@@ -76,8 +78,17 @@ int main(int argc, char** argv) {
   // Time of slowest process = Total time
   MPI_Reduce(&local_time_elapsed, &global_time, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
   if (my_rank == 0) {
-    printf("Elapsed Time: %.4lf secs\n", global_time);
+    printf("Elapsed Time: %f secs\n", local_time_elapsed);
+    printf("Total processes: %d\n", size);
+    printf("Grid size: %dx%d\n",options.size, options.size);
+    if (!options.reduce) {
+      printf("Total loops: %d\n", options.loops);
+    }
   }
+
+  // Free resources
+  free(options.input_file);
+  free(options.output_file);
 
   MPI_Finalize();
 

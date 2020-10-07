@@ -2,6 +2,19 @@
 #include <stdlib.h>
 #include <string.h>
 
+static void HandleError( cudaError_t err,
+                         const char *file,
+                         int line ) {
+    if (err != cudaSuccess) {
+        printf( "%s in %s at line %d\n", cudaGetErrorString( err ),
+                file, line );
+        exit( EXIT_FAILURE );
+    }
+}
+
+#define HANDLE_ERROR( err ) (HandleError( err, __FILE__, __LINE__ ))
+
+
 #define BLOCK_SIZE 4
 
 typedef struct options {
@@ -97,6 +110,8 @@ int main(int argc, char* argv[]) {
   char* d_grid;            // Grid on device
   char* d_next_gen_grid;   // Next generation grid used on device
   char* d_tmp_grid;        // tmp grid pointer used to switch between grid and next_gen_grid
+  float time;
+  cudaEvent_t start, stop;
 
   parse_command_line_arguments(argc, argv);
 
@@ -117,6 +132,10 @@ int main(int argc, char* argv[]) {
   dim3 block_size(BLOCK_SIZE, BLOCK_SIZE);
 	dim3 grid_size(options.size / BLOCK_SIZE, options.size / BLOCK_SIZE);
 
+  HANDLE_ERROR(cudaEventCreate(&start));
+  HANDLE_ERROR(cudaEventCreate(&stop));
+  HANDLE_ERROR(cudaEventRecord(start, 0));
+
   for (int i = 0; i < options.loops; ++i) {
     evolution<<<grid_size, block_size>>>(d_grid, d_next_gen_grid, options.size);
     d_tmp_grid = d_grid;
@@ -127,6 +146,12 @@ int main(int argc, char* argv[]) {
 
   // Copy results back to host grid
   cudaMemcpy(h_grid, d_grid, grid_bytes, cudaMemcpyDeviceToHost);
+
+  HANDLE_ERROR(cudaEventRecord(stop, 0));
+  HANDLE_ERROR(cudaEventSynchronize(stop));
+  HANDLE_ERROR(cudaEventElapsedTime(&time, start, stop));
+
+  printf("Time elapsed:  %3.1f ms\n", time);
 
   // Free resources
   cudaFree(d_grid);

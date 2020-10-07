@@ -23,7 +23,6 @@ void __usage() {
 }
 
 void parse_command_line_arguments(int argc, char *argv[]) {
-  if (argc < 9) __usage();
   int option;
   while (1) {
     int option_index;
@@ -50,12 +49,16 @@ void parse_command_line_arguments(int argc, char *argv[]) {
         break;
       }
       case 'o': {
-        options.output_file = strdup(optarg);
-        if (file_exists(options.output_file)) {
-          remove(options.output_file);
+        if (optarg != NULL) {
+          options.output_file = strdup(optarg);
+          if (file_exists(options.output_file)) {
+            remove(options.output_file);
+          } else {
+            FILE* fp = fopen(options.output_file, "w");
+            fclose(fp);
+          }
         } else {
-          FILE* fp = fopen(options.output_file, "w");
-          fclose(fp);
+          options.output_file = NULL;
         }
         break;
       }

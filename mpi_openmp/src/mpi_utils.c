@@ -1,5 +1,6 @@
 #include <math.h>
 #include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 #include <stdbool.h>
 
@@ -93,7 +94,9 @@ void run_game(char** local_grid, int rank, int no_processes,
     MPI_Waitall(8, send_req, status);
 
     // Write i-th generation using parallel I/O
-    parallel_write(options.output_file, rank, no_processes, options.size, subgrid, local_grid);
+    if (options.output_file != NULL) {
+      parallel_write(options.output_file, rank, no_processes, options.size, subgrid, local_grid);
+    }
   }
 
   // Free resources

@@ -6,9 +6,9 @@
 
   static struct option options_spec[] = {
     {"l",    required_argument, NULL, 'l'},
-		{"r",    required_argument, NULL, 'r'},
+		{"r",    optional_argument, NULL, 'r'},
     {"i",    required_argument, NULL, 'i'},
-		{"o",    required_argument, NULL, 'o'},
+		{"o",    optional_argument, NULL, 'o'},
 		{"n",    required_argument, NULL, 'n'},
     {"help", no_argument,       NULL, 'h'},
     {0, 0, 0}

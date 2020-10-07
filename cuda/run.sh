@@ -17,7 +17,7 @@
 cd $PBS_O_WORKDIR
 
 # Run executable #
-./gol -l 15 -n 8 -i "/home/pool/argo081/Game-Of-Life/misc/grids/small" -o "/home/pool/argo081/Game-Of-Life/misc/outputs/small"
+./gol -l 15 -n 840 -i "/home/pool/argo081/Game-Of-Life/misc/grids/840x840_grid" -o "/home/pool/argo081/Game-Of-Life/misc/outputs/small"
 
 # profile executable #
 #nvprof ./gol

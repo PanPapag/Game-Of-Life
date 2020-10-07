@@ -4,10 +4,12 @@
 #PBS -l pvmem=2G
 
 # Max Wall time, Example 1 Minute #
-#PBS -l walltime=00:30:00
+#PBS -l walltime=01:00:00
 
 # How many nodes and tasks per node, Example 2 nodes with 8 tasks each => 16 tasks #
-#PBS -l nodes=1:ppn=4
+#PBS -l select=1:ncpus=1:mpiprocs=1
+
+#PBS -l place=excl
 
 # Which Queue to use, DO NOT CHANGE #
 #PBS -q workq
@@ -30,4 +32,4 @@ cd $PBS_O_WORKDIR
 export OMP_NUM_THREADS=1
 
 # Run executable #
-mpirun ../build/main.x -l 15 -n 8 -i "/home/pool/argo081/Game-Of-Life/misc/grids/small" -o "/home/pool/argo081/Game-Of-Life/misc/outputs/small"
+mpirun ../build/main.x -l 15 -n 840 -i "/home/pool/argo081/Game-Of-Life/misc/grids/840x840_grid"
