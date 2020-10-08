@@ -1,7 +1,7 @@
 BDIR := ./build
 
 CC := mpicc
-CFLAGS := -O3
+CFLAGS := -O3 -fopenmp
 
 $(shell mkdir -p $(BDIR))
 
@@ -22,4 +22,4 @@ $(BDIR)/main.x: $(ALL_OBJ)
 clean:
 	rm -rf $(BDIR) $(ALL_OBJ)
 
-$(VERBOSE).SILENT:
+# $(VERBOSE).SILENT:
