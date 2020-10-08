@@ -25,6 +25,8 @@ typedef struct options {
 } program_options;
 
 program_options options;
+options.input_file = NULL;
+options.output_file = NULL;
 
 void parse_command_line_arguments(int argc, char* argv[]) {
   for (int i = 1; i < argc; i++) {
@@ -157,8 +159,12 @@ int main(int argc, char* argv[]) {
   cudaFree(d_grid);
   cudaFree(d_next_gen_grid);
   free(h_grid);
-  free(options.input_file);
-  free(options.output_file);
+  if (options.input_file != NULL) {
+    free(options.input_file);
+  }
+  if (options.output_file != NULL) {
+    free(options.output_file);
+  }
 
   return 0;
 }

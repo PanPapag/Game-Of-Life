@@ -22,4 +22,4 @@ $(BDIR)/main.x: $(ALL_OBJ)
 clean:
 	rm -rf $(BDIR) $(ALL_OBJ)
 
-# $(VERBOSE).SILENT:
+$(VERBOSE).SILENT:
