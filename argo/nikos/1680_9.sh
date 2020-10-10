@@ -7,7 +7,7 @@
 #PBS -l walltime=01:00:00
 
 # How many nodes and tasks per node, Example 2 nodes with 8 tasks each => 16 tasks #
-#PBS -l select=7:ncpus=8:mpiprocs=8
+#PBS -l select=5:ncpus=8:mpiprocs=2:ompthreads=2
 
 #PBS -l place=excl
 
@@ -15,10 +15,10 @@
 #PBS -q workq
 
 # Stdout Output File, if not provided a <JobName>.o<JobID> will be created #
-#PBS -o 1680_49.out
+#PBS -o 1680_9.out
 
 # Stderr Output File, if not provided a <JobName>.e<JobID> will be created #
-#PBS -e 1680_49.err
+#PBS -e 1680_9.err
 
 # JobName #
 #PBS -N myJob
@@ -29,7 +29,7 @@ cd $PBS_O_WORKDIR
 #OpenMP Threads #
 # OMP_NUM_THREADS * ppn should be max 8 (the total number of node cores= 8).
 # To use OpenMPI remember to include -fopenmp in compiler flags in order to activate OpenMP directives.
-export OMP_NUM_THREADS=1
+export OMP_NUM_THREADS=2
 
 # Run executable #
-mpirun -np 49 ../../build/main.x-l 50 -n 1680 -i "/home/pool/argo079/Game-of-Life/misc/grids/1680x1680_grid" -r 1
+mpirun -np 9 ../../build/main.x -l 50 -n 1680 -i "/home/pool/argo079/Game-of-Life/misc/grids/1680x1680_grid" -r 1
