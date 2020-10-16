@@ -63,5 +63,5 @@ __The full report is available [here](misc/Parallel_Systems_Project.pdf)__
 
 ## Project implemented by
 
-[Nikos Galanis](https://github.com/nikosgalanis) \\
+[Nikos Galanis](https://github.com/nikosgalanis) \
 [Pantelis Papageorgiou](https://github.com/PanPapag/)
