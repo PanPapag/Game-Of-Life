@@ -2,7 +2,7 @@
 
 ## About GoL
 
-John Conway came up with the Game of Life in 1970. The game demonstrates the fact that some simple local rules can lead to interesting large-scale life behavior(birth, reproduction and death). The game is played in a 2 dimensional grid $(N \times N)$, made of cells, that can be either alive, or dead. The game does not have any players, thus it does not require any input by the user. Each cell has at  most 8 neighbours, that determine its state in the next generation. The re-formation of the grid from generation to generation is done simultaneously, meaning that each state in the next generation depends exclusively in the state of the cell and its neighbours. __Our goal__ is to implement this game, using __Parallel programming__. This program is a pure example of the value of parallelization, because of the grid, and the ability to split it to equal pieces.
+John Conway came up with the Game of Life in 1970. The game demonstrates the fact that some simple local rules can lead to interesting large-scale life behavior(birth, reproduction and death). The game is played in a 2 dimensional grid N x N, made of cells, that can be either alive, or dead. The game does not have any players, thus it does not require any input by the user. Each cell has at  most 8 neighbours, that determine its state in the next generation. The re-formation of the grid from generation to generation is done simultaneously, meaning that each state in the next generation depends exclusively in the state of the cell and its neighbours. __Our goal__ is to implement this game, using __Parallel programming__. This program is a pure example of the value of parallelization, because of the grid, and the ability to split it to equal pieces.
 
 ## Implementation
 
@@ -10,7 +10,7 @@ Our code for this assignment is spitted into many files. We have a directory whi
 
 ### MPI - OpenMP
 
-The program takes as input a  ($N \times N$) grid, which is provided in a simple text file. The data (0s and 1s) must be all in one row. So, if for example we want a  $(4 \times 4)$ grid, we are going to provide a file containing 16 characters.
+The program takes as input a  (N x N grid, which is provided in a simple text file. The data (0s and 1s) must be all in one row. So, if for example we want a  4 x 4 grid, we are going to provide a file containing 16 characters.
 
 Our goal was to design the MPI code by following the given instructions. Our main objectives were:
    - Reduction of idle time
@@ -39,10 +39,10 @@ CUDA is a platform designed jointly at software and hardware levels to make use 
 Those metrics for the MPI code without the `allreduce` parameter are plotted as following:
 
 
-![alt text](../Game-Of-Life/plots/MPI%20W_O%20All_Reduce%20Parallel%20TIme%20-%20Small%20Grids.png)
+![alt text](plots/MPI%20W_O%20All_Reduce%20Parallel%20TIme%20-%20Small%20Grids.png)
 
 
-![alt text](../Game-Of-Life/plots/MPI%20W_O%20All_Reduce%20Parallel%20TIme%20-%20Big%20Grids.png)
+![alt text](plots/MPI%20W_O%20All_Reduce%20Parallel%20TIme%20-%20Big%20Grids.png)
 
 ![alt text](plots/MPI%20W_O%20All_Reduce%20Efficiency.png)
 
@@ -63,5 +63,5 @@ __The full report is available [here](misc/Parallel_Systems_Project.pdf)__
 
 ## Project implemented by
 
-[Nikos Galanis](https://github.com/nikosgalanis)
+[Nikos Galanis](https://github.com/nikosgalanis) \\
 [Pantelis Papageorgiou](https://github.com/PanPapag/)
