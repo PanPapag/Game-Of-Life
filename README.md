@@ -71,6 +71,9 @@ __The full report is available [here](misc/Parallel_Systems_Project.pdf)__
 - While in the cuda folder __Compile__ just by typing nvcc -o executable gol.cu
 - __Run__ by passsing the correct parameters to the executable produced by compilation
 
+## Note:
+For our experiments we used a cluster named Argo which runs the executables by submiting jobs via qsub. If you have access to a similar cluster you can definitely use our scripts for your ease!
+
 ## Project implemented by
 
 [Nikos Galanis](https://github.com/nikosgalanis) \
