@@ -66,7 +66,7 @@ __The full report is available [here](misc/Parallel_Systems_Project.pdf)__
 - While in the Project folder __Compile__ just by typing `make`
 - Cd to build folder and __Run__ mpiexec -n <processes> ./main.x -l <loops> -n <grid_size> -i <input_file> -r <AllReduce_flag>
 
-## Compilation and running for MPI 
+## Compilation and running for CUDA
 
 - While in the cuda folder __Compile__ just by typing nvcc -o executable gol.cu
 - __Run__ by passsing the correct parameters to the executable produced by compilation
