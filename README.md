@@ -55,11 +55,21 @@ Regarding our CUDA implementation, during our runs using 1 and 2 GPUs, those are
 __The full report is available [here](misc/Parallel_Systems_Project.pdf)__
 
 
-## Compilation and running
+## Compilation and running for MPI 
 
-- __Compile__ just by typing `make`
+- While in the Project folder __Compile__ just by typing `make`
+- Cd to build folder and __Run__ mpiexec -n <processes> ./main.x -l <loops> -n <grid_size> -i <input_file> -r <AllReduce_flag>
+   
+## Compilation and running for Hybrid: MPI+OpenMP 
+
+- __Edit__ Makefile by adding flag -fopenmp 
+- While in the Project folder __Compile__ just by typing `make`
+- Cd to build folder and __Run__ mpiexec -n <processes> ./main.x -l <loops> -n <grid_size> -i <input_file> -r <AllReduce_flag>
+
+## Compilation and running for MPI 
+
+- While in the cuda folder __Compile__ just by typing nvcc -o executable gol.cu
 - __Run__ by passsing the correct parameters to the executable produced by compilation
-
 
 ## Project implemented by
 
