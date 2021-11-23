@@ -6,7 +6,7 @@ John Conway came up with the Game of Life in 1970. The game demonstrates the fac
 
 ## Implementation
 
-Our code for this assignment is spitted into many files. We have a directory which contains common files used by all the methods that we have developed. For each method (MPI, OpenMP, CUDA), we have a directory containing all the useful files. In the directory misc, there are various input and output files, while in the directory plots there are vrious plots regarding our time achievements while running this program in a supercomputer.
+Our code for this assignment is splitted into many files. We have a directory which contains common files used by all the methods that we have developed. For each method (MPI, OpenMP, CUDA), we have a directory containing all the useful files. In the directory misc, there are various input and output files, while in the directory plots there are vrious plots regarding our time achievements while running this program in a supercomputer.
 
 ### MPI - OpenMP
 
@@ -58,17 +58,17 @@ __The full report is available [here](misc/Parallel_Systems_Project.pdf)__
 ## Compilation and running for MPI 
 
 - While in the Project folder __Compile__ just by typing `make`
-- Cd to build folder and __Run__ mpiexec -n <processes> ./main.x -l <loops> -n <grid_size> -i <input_file> -r <AllReduce_flag>
+- Cd to build folder and __Run__ ```mpiexec -n <processes> ./main.x -l <loops> -n <grid_size> -i <input_file> -r <AllReduce_flag>```
    
 ## Compilation and running for Hybrid: MPI+OpenMP 
 
 - __Edit__ Makefile by adding flag -fopenmp 
 - While in the Project folder __Compile__ just by typing `make`
-- Cd to build folder and __Run__ mpiexec -n <processes> ./main.x -l <loops> -n <grid_size> -i <input_file> -r <AllReduce_flag>
+- Cd to build folder and __Run__ ```mpiexec -n <processes> ./main.x -l <loops> -n <grid_size> -i <input_file> -r <AllReduce_flag>```
 
 ## Compilation and running for CUDA
 
-- While in the cuda folder __Compile__ just by typing nvcc -o executable gol.cu
+- While in the cuda folder __Compile__ just by typing ```nvcc -o executable gol.cu```
 - __Run__ by passsing the correct parameters to the executable produced by compilation
 
 ## Note
